@@ -44,3 +44,37 @@ exports.isNotEmpty = obj => {
   }
   return false;
 };
+
+exports.buildPGSelectQuery = object => {
+  const arr = [];
+  for (const key in object) {
+    if (!object.hasOwnProperty(key)) continue;
+    const value = object[key];
+    if (typeof value == "object" && value != null) continue;
+    let str = "";
+    if (key == "id") {
+      str = `"${key}" = '${value}'::uuid`;
+    } else {
+      str = `"${key}" = NULLIF('${value}', 'null')`;
+    }
+    arr.push(str);
+  }
+  return arr.join(" AND ");
+};
+
+exports.buildPGUpdateQuery = object => {
+  const keys = [];
+  const values = [];
+  for (const key in object) {
+    if (!object.hasOwnProperty(key)) continue;
+    const value = object[key];
+    if (typeof value == "object" && value != null) continue;
+    keys.push(`"${key}"`);
+    if (key == "id") {
+      values.push(`'${value}'::uuid`);
+    } else {
+      values.push(`NULLIF('${value}', 'null')`);
+    }
+  }
+  return "(" + keys.join(", ") + ") VALUES (" + values.join(", ") + ")";
+};
