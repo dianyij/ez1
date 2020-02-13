@@ -27,7 +27,7 @@ exports.toUTC = time => {
   return new Date(time).getTime();
 };
 
-exports.notEmpty = obj => {
+exports.isNotEmpty = obj => {
   if (!obj || obj == "null" || obj == "false") return false;
   if (typeof obj === "object") {
     let values = obj;
@@ -35,7 +35,7 @@ exports.notEmpty = obj => {
       values = Object.values(obj);
     }
     for (let i = 0; i < values.length; i++) {
-      if (this.notEmpty(values[i])) {
+      if (this.isNotEmpty(values[i])) {
         return true;
       }
     }
