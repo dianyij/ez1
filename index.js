@@ -30,7 +30,7 @@ exports.notEmpty = obj => {
       values = Object.values(obj);
     }
     for (let i = 0; i < values.length; i++) {
-      if (notEmpty(values[i])) {
+      if (this.notEmpty(values[i])) {
         return true;
       }
     }
