@@ -22,6 +22,11 @@ exports.sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 
 exports.getRandomInt = max => Math.floor(Math.random() * Math.floor(max));
 
+exports.toUTC = time => {
+  if (!time) return null;
+  return new Date(time).getTime();
+};
+
 exports.notEmpty = obj => {
   if (!obj || obj == "null" || obj == "false") return false;
   if (typeof obj === "object") {
