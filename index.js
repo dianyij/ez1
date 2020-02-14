@@ -70,7 +70,7 @@ exports.buildPGUpdateQuery = object => {
     const value = object[key];
     if (typeof value == "object" && value != null) continue;
     keys.push(`"${key}"`);
-    if (key == "id" || key.indexOf("_id")) {
+    if (key == "id" || key.indexOf("_id") > 0) {
       values.push(`'${value}'::uuid`);
     } else {
       values.push(`NULLIF('${value}', 'null')`);
