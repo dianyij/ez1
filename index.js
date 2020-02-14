@@ -52,7 +52,7 @@ exports.buildPGSelectQuery = object => {
     const value = object[key];
     if (typeof value == "object" && value != null) continue;
     let str = "";
-    if (key == "id") {
+    if (key == "id" || key.indexOf("_id")) {
       str = `"${key}" = '${value}'::uuid`;
     } else {
       str = `"${key}" = NULLIF('${value}', 'null')`;
@@ -70,7 +70,7 @@ exports.buildPGUpdateQuery = object => {
     const value = object[key];
     if (typeof value == "object" && value != null) continue;
     keys.push(`"${key}"`);
-    if (key == "id") {
+    if (key == "id" || key.indexOf("_id")) {
       values.push(`'${value}'::uuid`);
     } else {
       values.push(`NULLIF('${value}', 'null')`);
