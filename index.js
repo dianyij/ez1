@@ -69,7 +69,11 @@ exports.buildPGSelectQuery = object => {
     } else if (isBool(value)) {
       str = `"${key}" = '${value}'::boolean`;
     } else {
-      str = `"${key}" = NULLIF('${value}', 'null')`;
+      if (isNull()) {
+        str = `"${key}" = NULL`;
+      } else {
+        str = `"${key}" = '${value.replace(`'`, `''`)}'`;
+      }
     }
     arr.push(str);
   }
@@ -94,7 +98,11 @@ exports.buildPGUpdateQuery = object => {
     } else if (isBool(value)) {
       values.push(`'${value}'::boolean`);
     } else {
-      values.push(`NULLIF('${value}', 'null')`);
+      if (isNull()) {
+        values.push(`NULL`);
+      } else {
+        values.push(`'${value.replace(`'`, `''`)}'`);
+      }
     }
   }
   return "(" + keys.join(", ") + ") VALUES (" + values.join(", ") + ")";
