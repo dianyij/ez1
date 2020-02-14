@@ -47,12 +47,13 @@ exports.isNotEmpty = obj => {
 
 exports.buildPGSelectQuery = object => {
   const arr = [];
+  const regex = /_?id$/g;
   for (const key in object) {
     if (!object.hasOwnProperty(key)) continue;
     const value = object[key];
     if (typeof value == "object" && value != null) continue;
     let str = "";
-    if (key == "id" || key.indexOf("_id")) {
+    if (regex.test(key)) {
       str = `"${key}" = '${value}'::uuid`;
     } else {
       str = `"${key}" = NULLIF('${value}', 'null')`;
@@ -65,16 +66,28 @@ exports.buildPGSelectQuery = object => {
 exports.buildPGUpdateQuery = object => {
   const keys = [];
   const values = [];
+  const regex = /_?id$/g;
   for (const key in object) {
     if (!object.hasOwnProperty(key)) continue;
     const value = object[key];
     if (typeof value == "object" && value != null) continue;
     keys.push(`"${key}"`);
-    if (key == "id" || key.indexOf("_id") > 0) {
+    if (regex.test(key)) {
       values.push(`'${value}'::uuid`);
     } else {
       values.push(`NULLIF('${value}', 'null')`);
     }
   }
   return "(" + keys.join(", ") + ") VALUES (" + values.join(", ") + ")";
+};
+
+exports.buildPGUpsertQuery = object => {
+  const keys = [];
+  for (const key in object) {
+    if (!object.hasOwnProperty(key)) continue;
+    const value = object[key];
+    if (typeof value == "object" && value != null) continue;
+    keys.push(`"${key}" = EXCLUDED."${key}"`);
+  }
+  return keys.join(", ");
 };
