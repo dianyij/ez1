@@ -55,6 +55,8 @@ exports.buildPGSelectQuery = object => {
     let str = "";
     if (regex.test(key)) {
       str = `"${key}" = '${value}'::uuid`;
+    } else if (key == "true" || key == "false") {
+      str = `"${key}" = '${value}'::boolean`;
     } else {
       str = `"${key}" = NULLIF('${value}', 'null')`;
     }
@@ -74,6 +76,8 @@ exports.buildPGUpdateQuery = object => {
     keys.push(`"${key}"`);
     if (regex.test(key)) {
       values.push(`'${value}'::uuid`);
+    } else if (key == "true" || key == "false") {
+      values.push(`'${value}'::boolean`);
     } else {
       values.push(`NULLIF('${value}', 'null')`);
     }
