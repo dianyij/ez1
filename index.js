@@ -72,7 +72,9 @@ exports.buildPGSelectQuery = object => {
       if (isNull(value)) {
         str = `"${key}" = NULL`;
       } else {
-        str = `"${key}" = '${value.replace(/\\*\s*\'/g, `''`)}'`;
+        str = `"${key}" = '${
+          typeof value == "string" ? value.replace(/\\*\s*\'/g, `''`) : value
+        }'`;
       }
     }
     arr.push(str);
@@ -101,7 +103,11 @@ exports.buildPGUpdateQuery = object => {
       if (isNull(value)) {
         values.push(`NULL`);
       } else {
-        values.push(`'${value.replace(/\\*\s*\'/g, `''`)}'`);
+        values.push(
+          `'${
+            typeof value == "string" ? value.replace(/\\*\s*\'/g, `''`) : value
+          }'`
+        );
       }
     }
   }
