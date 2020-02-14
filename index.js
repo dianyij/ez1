@@ -72,7 +72,7 @@ exports.buildPGSelectQuery = object => {
       if (isNull()) {
         str = `"${key}" = NULL`;
       } else {
-        str = `"${key}" = '${value.replace(`'`, `''`)}'`;
+        str = `"${key}" = '${value}'`;
       }
     }
     arr.push(str);
@@ -101,7 +101,7 @@ exports.buildPGUpdateQuery = object => {
       if (isNull()) {
         values.push(`NULL`);
       } else {
-        values.push(`'${value.replace(`'`, `''`)}'`);
+        values.push(`'${value}'`);
       }
     }
   }
