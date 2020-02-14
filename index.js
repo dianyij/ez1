@@ -45,6 +45,13 @@ exports.isNotEmpty = obj => {
   return false;
 };
 
+const isNull = value => {
+  return value == null || value == "null" || value == "";
+};
+const isBool = value => {
+  return value == "true" || value == "false" || typeof value == "boolean";
+};
+
 exports.buildPGSelectQuery = object => {
   const arr = [];
   const regex = /_?id$/g;
@@ -54,12 +61,12 @@ exports.buildPGSelectQuery = object => {
     if (typeof value == "object" && value != null) continue;
     let str = "";
     if (regex.test(key)) {
-      str = `"${key}" = '${value}'::uuid`;
-    } else if (
-      value == "true" ||
-      value == "false" ||
-      typeof value == "boolean"
-    ) {
+      if (isNull(value)) {
+        str = `"${key}" = NULL`;
+      } else {
+        str = `"${key}" = '${value}'::uuid`;
+      }
+    } else if (isBool(value)) {
       str = `"${key}" = '${value}'::boolean`;
     } else {
       str = `"${key}" = NULLIF('${value}', 'null')`;
@@ -79,12 +86,12 @@ exports.buildPGUpdateQuery = object => {
     if (typeof value == "object" && value != null) continue;
     keys.push(`"${key}"`);
     if (regex.test(key)) {
-      values.push(`'${value}'::uuid`);
-    } else if (
-      value == "true" ||
-      value == "false" ||
-      typeof value == "boolean"
-    ) {
+      if (isNull(value)) {
+        values.push(`NULL`);
+      } else {
+        values.push(`'${value}'::uuid`);
+      }
+    } else if (isBool(value)) {
       values.push(`'${value}'::boolean`);
     } else {
       values.push(`NULLIF('${value}', 'null')`);
