@@ -75,10 +75,12 @@ exports.buildPGSelectQuery = object => {
     } else if (isBool(value)) {
       str = `"${key}" = '${value}'::boolean`;
     } else {
-      if (isNull()) {
+      if (isNull(value)) {
         str = `"${key}" = NULL`;
       } else {
-        str = `"${key}" = '${value}'`;
+        str = `"${key}" = '${
+          typeof value == "string" ? value.replace(/\\*\s*\'/g, `''`) : value
+        }'`;
       }
     }
     arr.push(str);
@@ -104,10 +106,14 @@ exports.buildPGUpdateQuery = object => {
     } else if (isBool(value)) {
       values.push(`'${value}'::boolean`);
     } else {
-      if (isNull()) {
+      if (isNull(value)) {
         values.push(`NULL`);
       } else {
-        values.push(`'${value}'`);
+        values.push(
+          `'${
+            typeof value == "string" ? value.replace(/\\*\s*\'/g, `''`) : value
+          }'`
+        );
       }
     }
   }
