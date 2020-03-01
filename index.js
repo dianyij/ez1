@@ -46,7 +46,13 @@ exports.isNotEmpty = obj => {
 };
 
 const isNull = value => {
-  return value == null || value == "null" || value == "";
+  return (
+    value == null ||
+    value == "null" ||
+    value == "" ||
+    value == undefined ||
+    value == "undefined"
+  );
 };
 const isBool = value => {
   return value == "true" || value == "false" || typeof value == "boolean";
